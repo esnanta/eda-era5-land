@@ -47,7 +47,15 @@ The purpose of this project is to:
 
 
 ## Setup
-There is no setup required.
+Create a Python virtual environment named `myenv`:
+
+```sh
+sh setup_env.sh
+source myenv/bin/activate
+```
+
+Run these commands from the project directory. To leave the environment, run
+`deactivate`.
 
 
 ## Usage
