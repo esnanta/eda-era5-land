@@ -1,6 +1,6 @@
 # Stage 1 — Hourly Data Quality Assessment: Implementation Checklist
 
-**Status:** In progress — repository preparation is partially verified (dependency installation pending)  
+**Status:** In progress — Step 1 complete; Step 2 loader implemented, runtime tests pending  
 **Branch:** `dev` only  
 **Scope:** Build and validate the first ERA5-Land EDA notebook using whatever hourly Parquet data is available. Do not assume a fixed analysis period.
 
@@ -23,18 +23,18 @@ Inputs are **read-only** under `data/all/hourly/` (or a configured external data
 - [x] Correct outdated `template/eda_starter.ipynb.ipynb` references in `AGENTS.md`, `docs/app_description.md`, and `README.md` to the existing `template/eda_starter.ipynb`.
 - [x] Remove the outdated `era5_land_notebook.ipynb` entry from `README.md` if the file remains absent from `dev`.
 - [x] Add minimal, compatible analysis/test dependencies (including DuckDB, PyArrow, Pandas, NumPy, Matplotlib, Seaborn, JupyterLab, and pytest) without unnecessary engines or frameworks.
-- [ ] Verify environment creation, dependency installation, and basic imports.
+- [x] Verify environment creation, dependency installation, and basic imports.
 - [x] Review the diff and commit only this logical preparation change.
 
 **Done when:** documentation links resolve, dependencies install/import successfully, and the preparation commit is verified.
 
 ## 2. Simple Parquet loader
 
-- [ ] Create a small `data_loader.py` containing `load_hourly()` and `load_daily()`, both returning DuckDB relations.
-- [ ] Read year-named Parquet files discovered from `data/all/{hourly,daily}/` rather than requiring explicit start/end years.
-- [ ] Permit a different local or mounted data root through `ERA5_LAND_DATA_DIR`; keep `data/all/` as the default.
-- [ ] Raise a clear error for missing directories or matching Parquet files.
-- [ ] Keep all source files and manifests immutable; do not load the entire dataset into Pandas by default.
+- [x] Create a small `data_loader.py` containing `load_hourly()` and `load_daily()`, both returning DuckDB relations.
+- [x] Read year-named Parquet files discovered from `data/all/{hourly,daily}/` rather than requiring explicit start/end years.
+- [x] Permit a different local or mounted data root through `ERA5_LAND_DATA_DIR`; keep `data/all/` as the default.
+- [x] Raise a clear error for missing directories or matching Parquet files.
+- [x] Keep all source files and manifests immutable; do not load the entire dataset into Pandas by default.
 - [ ] Add focused tests using small temporary Parquet fixtures for both functions, missing files, and configurable paths.
 - [ ] Run relevant tests, review the diff, and commit.
 
@@ -111,7 +111,8 @@ Add one short row for each completed logical change. Do not mark incomplete work
 | Date (UTC) | Step | Commit | Verification / notes |
 | --- | --- | --- | --- |
 | 2026-11-14 | 1 — Documentation references | `62ff86c`, `aed4d02`, `69e7c1c` | Corrected template links; removed the missing notebook reference. Read back and checked files on `dev`. |
-| 2026-11-14 | 1 — Dependencies and setup docs | `09e3073`, `24ff093` | Added eight dependencies; updated README installation command. Requirement syntax validated and a fresh virtual environment created in the verification environment. **Installation/import of DuckDB and PyArrow not verified:** package index was unreachable. |
+| 2026-11-14 | 1 — Dependencies and setup docs | `09e3073`, `24ff093` | Added eight dependencies; updated README installation command. Requirement syntax validated; Python virtual environment created in verification environment. **User independently confirmed all eight imports succeeded in the project environment** with `python -c ...`. |
+| 2026-11-14 | 2 — Loader implementation | `536c3de`, `a4b38ad`, `94e5235` | Added two DuckDB Parquet loaders, seven parametrized test cases, and README usage. Python syntax checks passed, and repository files were reviewed. **Pytest requiring real DuckDB not executed** in the assistant runtime because package installation was blocked; `python -m pytest tests/test_data_loader.py -q` remains required. |
 
 ## Completion policy
 
