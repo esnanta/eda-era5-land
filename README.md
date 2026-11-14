@@ -85,6 +85,7 @@ Loader tests and their execution commands are documented in [tests/README.md](te
 | [docs/app_description.md](docs/app_description.md) | EDA scope, scientific requirements, and acceptance criteria |
 | [docs/repo_guidelines.md](docs/repo_guidelines.md) | Branch, review, verification, and commit discipline |
 | [docs/python_se_principle.md](docs/python_se_principle.md) | Python design principles (SOLID guided by DRY/KISS/YAGNI) |
+| [tests/README.md](tests/README.md) | Current unit/integration test structure and commands |
 | [template/eda_starter.ipynb](template/eda_starter.ipynb) | Original EDA writing and presentation template |
 | [ds-notebook/](ds-notebook/) | Data-science notebook examples from CoenMeintjes |
 | [setup_env.sh](setup_env.sh) | Creates the `myenv` virtual environment |
