@@ -1,6 +1,6 @@
 # Stage 1 — Hourly Data Quality Assessment: Implementation Checklist
 
-**Status:** Not started — implementation pending  
+**Status:** In progress — repository preparation is partially verified (dependency installation pending)  
 **Branch:** `dev` only  
 **Scope:** Build and validate the first ERA5-Land EDA notebook using whatever hourly Parquet data is available. Do not assume a fixed analysis period.
 
@@ -20,11 +20,11 @@ Inputs are **read-only** under `data/all/hourly/` (or a configured external data
 
 ## 1. Repository preparation
 
-- [ ] Correct outdated `template/eda_starter.ipynb.ipynb` references in `AGENTS.md`, `docs/app_description.md`, and `README.md` to the existing `template/eda_starter.ipynb`.
-- [ ] Remove the outdated `era5_land_notebook.ipynb` entry from `README.md` if the file remains absent from `dev`.
-- [ ] Add minimal, compatible analysis/test dependencies (including DuckDB, PyArrow, Pandas, NumPy, Matplotlib, Seaborn, JupyterLab, and pytest) without unnecessary engines or frameworks.
+- [x] Correct outdated `template/eda_starter.ipynb.ipynb` references in `AGENTS.md`, `docs/app_description.md`, and `README.md` to the existing `template/eda_starter.ipynb`.
+- [x] Remove the outdated `era5_land_notebook.ipynb` entry from `README.md` if the file remains absent from `dev`.
+- [x] Add minimal, compatible analysis/test dependencies (including DuckDB, PyArrow, Pandas, NumPy, Matplotlib, Seaborn, JupyterLab, and pytest) without unnecessary engines or frameworks.
 - [ ] Verify environment creation, dependency installation, and basic imports.
-- [ ] Review the diff and commit only this logical preparation change.
+- [x] Review the diff and commit only this logical preparation change.
 
 **Done when:** documentation links resolve, dependencies install/import successfully, and the preparation commit is verified.
 
@@ -110,7 +110,8 @@ Add one short row for each completed logical change. Do not mark incomplete work
 
 | Date (UTC) | Step | Commit | Verification / notes |
 | --- | --- | --- | --- |
-| — | — | — | No Stage 1 implementation completed yet. |
+| 2026-11-14 | 1 — Documentation references | `62ff86c`, `aed4d02`, `69e7c1c` | Corrected template links; removed the missing notebook reference. Read back and checked files on `dev`. |
+| 2026-11-14 | 1 — Dependencies and setup docs | `09e3073`, `24ff093` | Added eight dependencies; updated README installation command. Requirement syntax validated and a fresh virtual environment created in the verification environment. **Installation/import of DuckDB and PyArrow not verified:** package index was unreachable. |
 
 ## Completion policy
 
