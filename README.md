@@ -22,9 +22,10 @@ The repository currently includes `setup_env.sh` for creating a Python virtual e
 ```bash
 sh setup_env.sh
 source myenv/bin/activate
+python -m pip install -r requirements.txt
 ```
 
-The script **only creates the virtual environment**; it does not install analysis dependencies. Python, Jupyter, DuckDB, PyArrow, Pandas, NumPy, and plotting dependencies will be configured as notebook implementation is added. Do not assume a pinned `requirements.txt` or finished run command exists yet.
+The setup script only creates the virtual environment; the separate pip command installs the Stage 1 analysis dependencies listed in [requirements.txt](requirements.txt). The two EDA notebooks and data loader are not implemented yet.
 
 The planned large-data approach is to query and aggregate Parquet with **DuckDB**, and transfer only modest-sized results to Pandas for plotting. Avoid reading the entire hourly dataset into a Pandas DataFrame.
 
