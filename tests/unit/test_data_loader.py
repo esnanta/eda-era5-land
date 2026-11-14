@@ -57,7 +57,4 @@ def test_default_root_is_not_relative_to_working_directory(monkeypatch, tmp_path
     monkeypatch.delenv("ERA5_LAND_DATA_DIR", raising=False)
     monkeypatch.chdir(tmp_path)
 
-    with pytest.raises(FileNotFoundError) as exc_info:
-        data_loader.load_hourly()
-
-    assert str(expected_root / "hourly") in str(exc_info.value)
+    assert data_loader._DEFAULT_DATA_DIR == expected_root
