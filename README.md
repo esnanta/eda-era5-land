@@ -13,7 +13,7 @@ The project is being developed from existing EDA and data-science notebook templ
 
 Stage 1 will report **Expected Source Characteristics**, **Data Limitations and Incompleteness**, **Anomalies Requiring Investigation**, and **Confirmed Data Quality Issues**. Both stages will keep inputs unchanged and explain limitations in each finding.
 
-These notebooks will use the [EDA Starter notebook](template/eda_starter.ipynb.ipynb) for readable presentation and [the data-science EDA notebook](ds-notebook/01_exploratory_data_analysis.ipynb) as the first methodology reference. They are not required to copy template code or generic data-cleaning steps.
+These notebooks will use the [EDA Starter notebook](template/eda_starter.ipynb) for readable presentation and [the data-science EDA notebook](ds-notebook/01_exploratory_data_analysis.ipynb) as the first methodology reference. They are not required to copy template code or generic data-cleaning steps.
 
 ## Environment setup
 
@@ -73,9 +73,8 @@ A future small loader module will expose **`load_hourly()`** and **`load_daily()
 | [docs/app_description.md](docs/app_description.md) | EDA scope, scientific requirements, and acceptance criteria |
 | [docs/repo_guidelines.md](docs/repo_guidelines.md) | Branch, review, verification, and commit discipline |
 | [docs/python_se_principle.md](docs/python_se_principle.md) | Python design principles (SOLID guided by DRY/KISS/YAGNI) |
-| [template/eda_starter.ipynb.ipynb](template/eda_starter.ipynb.ipynb) | Original EDA writing and presentation template |
+| [template/eda_starter.ipynb](template/eda_starter.ipynb) | Original EDA writing and presentation template |
 | [ds-notebook/](ds-notebook/) | Data-science notebook examples from CoenMeintjes |
-| [era5_land_notebook.ipynb](era5_land_notebook.ipynb) | Existing inherited notebook; not either of the planned EDA stages |
 | [setup_env.sh](setup_env.sh) | Creates the `myenv` virtual environment |
 
 Planned outputs from the completed notebooks will be under `eda/hourly_assessment/{reports,figures}/` and `eda/daily_analysis/{reports,figures}/`. Those output directories are **not evidence of completed analyses**.
