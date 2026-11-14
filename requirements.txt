@@ -1,0 +1,13 @@
+# Core Parquet analytics
+duckdb
+pyarrow
+
+# Small in-memory summaries and scientific plotting
+pandas
+numpy
+matplotlib
+seaborn
+
+# Notebook development and verification
+jupyterlab
+pytest
