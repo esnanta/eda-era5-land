@@ -9,8 +9,10 @@ tests/
 ├── AGENTS.md
 ├── README.md
 ├── unit/
+│   ├── __init__.py
 │   └── test_data_loader.py
 └── integration/
+    ├── __init__.py
     └── test_data_loader.py
 ```
 
