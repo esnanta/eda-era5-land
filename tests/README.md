@@ -1,42 +1,47 @@
 # Testing
 
-Tests verify the implemented ERA5-Land EDA helpers and, as they are added, small scientific analysis calculations. The suite is offline-first and uses temporary test data. See [tests/AGENTS.md](AGENTS.md) for technical rules and the [project README](../README.md) for environment setup.
+**Role: CURRENT BEHAVIOR / HOW TO RUN TESTS.** This document describes tests currently present in the EDA repository, their purpose, and commands. For instructions on how an agent should design and change tests, see [tests/AGENTS.md](AGENTS.md). For project setup, see the [root README](../README.md).
 
-## Current structure
+## Current test structure
 
 ```text
 tests/
 ├── AGENTS.md
 ├── README.md
-└── test_data_loader.py
+├── unit/
+│   └── test_data_loader.py
+└── integration/
+    └── test_data_loader.py
 ```
 
-The loader tests cover both hourly and daily Parquet discovery, the configurable data root, and missing or empty input directories. Test fixtures are created in temporary directories; the real `data/all/` is not modified.
+**Unit tests** call the actual functions in [`utils/data_loader.py`](../utils/data_loader.py) to check missing/empty input handling and input-path selection. The DuckDB read boundary is mocked only for filename-selection checks; other loader behavior is exercised directly.
 
-## Run the tests
+**Integration tests** call the same production loader using **real DuckDB and small Parquet files** created under temporary test directories. They verify annual-file discovery, hourly/daily separation, returned relation values, and input/manifest preservation. They do not use the project dataset or download remote data.
 
-From the project root, with the environment activated:
+## Run tests
 
-```bash
-python -m pytest tests/test_data_loader.py -q
-```
-
-Run the full current suite:
+From the repository root with the Python environment activated:
 
 ```bash
+python -m pytest tests/unit -q
+python -m pytest tests/integration -q
 python -m pytest tests -q
 ```
 
-When a test modifies the loader's import path or behavior, run the tests **again** on that version. Passing output from an earlier version does not verify a refactor.
+To run only the loader integration tests:
 
-## Testing principles
+```bash
+python -m pytest tests/integration/test_data_loader.py -q
+```
 
-- Keep fixtures small and deterministic; do not require the real large hourly dataset for routine tests.
-- Include success and failure paths for file discovery and path configuration.
-- Use explicit expected results for timestamp continuity, missing values, duplicates, grid coverage, and variable-specific scientific calculations when those features are added.
-- Preserve original source data and manifests; never write test artifacts to `data/all/`.
-- Add tests only when needed to protect behavior, rather than creating unused test folders or complicated abstractions.
+A successful test run must be reported for **the current revision**. If production imports, paths, test placement, or assertions change, rerun the relevant suite.
+
+## Test isolation and interpretation
+
+Test fixtures belong in `tmp_path`; never write into `data/all/`. Keep cases deterministic and small. The tests protect **implemented loader behavior**, not data-quality findings for real ERA5-Land files.
+
+As Stage 1 assessment functions become available, add tests for verified scientific contracts and calculate expected outcomes independently of the implementation. Do not introduce tests for unimplemented analysis or duplicate a full algorithm inside a test fixture.
 
 ## Definition of done
 
-A change is complete when its targeted tests pass in a configured environment, the result is reported accurately, and relevant documentation and the Stage 1 checklist are updated. If required libraries are unavailable in the agent runtime, the user can run the documented command locally and provide the output for verification.
+Relevant unit and integration tests pass; source inputs remain unchanged; documentation reflects actual code; and the [Stage 1 checklist](../todo/STAGE_1_HOURLY_DATA_QUALITY_ASSESSMENT.md) records the verified result. Static checks or collection-only runs do not replace executable tests.
