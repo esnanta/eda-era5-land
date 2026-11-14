@@ -1,6 +1,6 @@
 # Stage 1 — Hourly Data Quality Assessment: Implementation Checklist
 
-**Status:** In progress — Step 1 complete; Step 2 tests reorganized by level, rerun verification pending  
+**Status:** In progress — Steps 1 and 2 complete; Stage 1 dataset inventory next  
 **Branch:** `dev` only  
 **Scope:** Build and validate the first ERA5-Land EDA notebook using whatever hourly Parquet data is available. Do not assume a fixed analysis period.
 
@@ -36,7 +36,7 @@ Inputs are **read-only** under `data/all/hourly/` (or a configured external data
 - [x] Raise a clear error for missing directories or matching Parquet files.
 - [x] Keep all source files and manifests immutable; do not load the entire dataset into Pandas by default.
 - [x] Add focused unit and integration tests in `tests/unit/` and `tests/integration/` covering both functions, missing files, and configurable paths.
-- [ ] Run relevant tests, review the diff, and commit.
+- [x] Run relevant tests, review the diff, and commit.
 
 **Done when:** both loader functions work on small fixtures and fail clearly on missing input, without changing source files.
 
@@ -115,6 +115,8 @@ Add one short row for each completed logical change. Do not mark incomplete work
 | 2026-11-14 | 2 — Loader implementation | `536c3de`, `a4b38ad`, `94e5235` | Added two DuckDB Parquet loaders and seven parametrized test cases. **User confirmed `7 passed in 0.22s` for the original root-level loader**, before its relocation. |
 | 2026-11-14 | 2 — Loader relocation and testing docs | `0f15301`, `86a6a02`, `824aa55`, `216930f`, `aa60088`, `932dda6`, `225fdea`, `0725a41` | Moved loader to `utils/`, updated imports and test documentation, and placed the agent-runtime dependency limitation in AGENTS. **Rerun tests on this revised version** before closing Step 2; the prior 7 passed does not verify the relocated import. |
 | 2026-11-14 | 2 — Test-level separation | `b0431fe`, `c79552d`, `fdc9014`, `d53a789`, `054132b`, `4c5ea25`, `229d817`, `8afa09b`, `9c71e2f`, `1bfb6a1` | Split actual production-loader tests into unit (isolated paths/errors) and integration (real DuckDB/Parquet). Tests call production code, not copied test algorithms. Updated instruction/setup document roles. Added package markers to prevent duplicate module-name collisions (`5f422be`, `b0a2790`, `35ffbdf`). **Execution on this revision remains pending.** |
+
+| 2026-11-14 | 2 — Verified loader test suite | User-run on `dev` | `tests/unit`: **6 passed in 0.07s**; `tests/integration`: **3 passed in 0.10s**; full `tests`: **9 passed in 0.12s**. Step 2 verified and closed. |
 
 ## Completion policy
 
