@@ -5,7 +5,7 @@ from pathlib import Path
 import duckdb
 import pytest
 
-import data_loader
+from utils import data_loader
 
 
 def _write_parquet(path: Path, value: int) -> None:
