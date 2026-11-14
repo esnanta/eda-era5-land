@@ -20,7 +20,7 @@ Read the documents relevant to the task before editing.
 | [README.md](README.md) | **CURRENT BEHAVIOR / SETUP** | Actual repository contents, environment setup, data placement, usage, and attribution |
 | [docs/repo_guidelines.md](docs/repo_guidelines.md) | **REPOSITORY WORKFLOW** | Branch restrictions, small changes, testing, commits, and push safety |
 | [docs/python_se_principle.md](docs/python_se_principle.md) | **PYTHON DESIGN** | Pragmatic SOLID guided by DRY, KISS, and YAGNI |
-| [template/eda_starter.ipynb.ipynb](template/eda_starter.ipynb.ipynb) | **NOTEBOOK STRUCTURE** | Narrative layout, analysis presentation, interpretation, conclusions, and references |
+| [template/eda_starter.ipynb](template/eda_starter.ipynb) | **NOTEBOOK STRUCTURE** | Narrative layout, analysis presentation, interpretation, conclusions, and references |
 | [ds-notebook/01_exploratory_data_analysis.ipynb](ds-notebook/01_exploratory_data_analysis.ipynb) | **EDA METHOD REFERENCE** | First choice for data-science EDA methodology |
 | **AGENTS.md** | **INSTRUCTIONS** | Agent behavior and navigation |
 
