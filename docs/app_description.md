@@ -4,7 +4,7 @@
 
 ## 1. Purpose and scope
 
-Conduct reproducible exploratory data analysis (EDA) of **Copernicus Climate Change Service (C3S) ERA5-Land** weather and land-surface data across the configured Aceh study area for **1 January 2016–31 December 2025**.
+This project continues the work of [`etl-weather`](https://github.com/esnanta/etl-weather) by conducting reproducible exploratory data analysis (EDA) of **Copernicus Climate Change Service (C3S) ERA5-Land** hourly and daily Parquet data for the Aceh study area. **The analysis period follows the data actually available**, rather than a predetermined set of years.
 
 Two complementary stages serve distinct purposes:
 
@@ -13,7 +13,7 @@ Two complementary stages serve distinct purposes:
 
 Their findings may inform later feature engineering or clustering, but **clustering/model training is not part of these two EDA stages**.
 
-This repository is an **analytics consumer**, not an ETL pipeline. [`etl-weather`](https://github.com/esnanta/etl-weather) is the read-only upstream producer. Do not couple to its Python modules, trigger downloads or transformations, or modify its repository.
+This repository is an **analytics consumer**, not an ETL pipeline. It reads exported Parquet files and manifests without downloading or transforming source climate data or coupling to producer code.
 
 ## 2. Data contract
 
@@ -43,8 +43,8 @@ A rectangular bounding box is **not** the administrative Aceh boundary. It inclu
 ### 2.2 Time semantics and coverage
 
 - **Hourly** Parquet represents hourly ERA5-Land observations with **UTC timestamps**.
-- **Daily** Parquet represents daily observations already transformed by upstream `etl-weather` using **UTC+7 calendar days**.
-- The study window is **2016–2025 inclusive**. Actual files can contain partial years or missing months; availability and completeness must be **measured**, not assumed.
+- **Daily** Parquet represents daily observations already aggregated using **UTC+7 calendar days**.
+- **Determine the study window from the available Parquet files, manifests, and observed timestamps.** Include whatever years and months are actually present; identify partial years, missing months, and temporal gaps instead of assuming completeness.
 - Do not recompute daily products from hourly data as the main EDA source. Cross-checks against hourly values may be used to investigate suspected daily anomalies, without changing the upstream transformation contract.
 
 ### 2.3 Input location and provenance
@@ -54,14 +54,10 @@ Use this local layout as the default, preserving upstream filenames and manifest
 ```text
 data/all/
 ├── hourly/
-│   ├── 2016_hourly.parquet
-│   ├── ...
-│   ├── 2025_hourly.parquet
+│   ├── YYYY_hourly.parquet
 │   └── manifest.json
 └── daily/
-    ├── 2016_daily.parquet
-    ├── ...
-    ├── 2025_daily.parquet
+    ├── YYYY_daily.parquet
     └── manifest.json
 ```
 
@@ -143,7 +139,7 @@ Assess:
 - soil moisture across three depths;
 - surface solar radiation;
 - wind speed and meteorological direction, respecting circular-angle conventions;
-- monthly/seasonal patterns and interannual variability across 2016–2025;
+- monthly/seasonal patterns and interannual variability across the available time span;
 - spatial differences across valid grid points, noting bbox versus administrative boundaries;
 - relationships among meteorological variables, with cautious correlation interpretation;
 - candidate variables and feature-engineering questions for future research (**without training clustering models**).
