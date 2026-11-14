@@ -1,6 +1,6 @@
 # ERA5-Land Exploratory Data Analysis — Aceh
 
-Exploratory data analysis (EDA) of **Copernicus CDS ERA5-Land** weather and land-surface data for the Aceh study area, **2016–2025**. This repository analyzes **existing Parquet exports** from the separate [`etl-weather` project](https://github.com/esnanta/etl-weather). It does not download or transform Copernicus source data.
+This project continues [`etl-weather`](https://github.com/esnanta/etl-weather) with exploratory data analysis (EDA) of existing **Copernicus CDS ERA5-Land** hourly and daily Parquet data for the Aceh study area. The period covered by each analysis is determined by the **data actually available**, not a fixed range of years. This repository does not download or transform Copernicus source data.
 
 The project is being developed from existing EDA and data-science notebook templates. Original authors and contributors are acknowledged below.
 
@@ -26,7 +26,7 @@ These notebooks will use the [EDA Starter notebook](template/eda_starter.ipynb.i
 | Item | Scope |
 | --- | --- |
 | Dataset | C3S ERA5-Land (`reanalysis-era5-land`) |
-| Study period | 1 January 2016 – 31 December 2025 |
+| Analysis period | Determined from available Parquet files, manifests, and observed timestamps |
 | Bounding box | North 6.1°, south 1.9°, west 94.9°, east 98.3° |
 | Expected grid | Regular 0.1° × 0.1°; 43 latitude values × 35 longitude values = **1,505 grid points** |
 | Hourly time | UTC |
@@ -39,26 +39,22 @@ Upstream provider variables are `tp`, `t2m`, `d2m`, `swvl1`, `swvl2`, `swvl3`, `
 
 ## Dataset placement
 
-Copy the **existing offline analytics exports** from `etl-weather` into:
+Place the **existing hourly and daily Parquet exports** and their manifests in:
 
 ```text
 data/
 └── all/
     ├── hourly/
-    │   ├── 2016_hourly.parquet
-    │   ├── ...
-    │   ├── 2025_hourly.parquet
+    │   ├── YYYY_hourly.parquet
     │   └── manifest.json
     └── daily/
-        ├── 2016_daily.parquet
-        ├── ...
-        ├── 2025_daily.parquet
+        ├── YYYY_daily.parquet
         └── manifest.json
 ```
 
-The example shows the intended naming for the full study period; **only copy years that were actually exported**. Preserve files and manifests together, including their original contents. The repository's `.gitignore` excludes `data/`: do not commit Parquet files, manifests, or other large datasets.
+`YYYY` represents any year for which an export is available. The EDA must discover existing files and report actual coverage, partial years, and gaps rather than assuming a predetermined period. Preserve files and manifests together, including their original contents. The repository's `.gitignore` excludes `data/`: do not commit Parquet files, manifests, or other large datasets.
 
-A future small loader module will expose **`load_hourly()`** and **`load_daily()`**, returning DuckDB relations. Local `data/all/` will be the default; an environment variable such as `ERA5_LAND_DATA_DIR` will allow the same directory structure to reside on another accessible drive. No cloud synchronization service or direct coupling to `etl-weather` is currently implemented.
+A future small loader module will expose **`load_hourly()`** and **`load_daily()`**, returning DuckDB relations. Local `data/all/` will be the default; an environment variable such as `ERA5_LAND_DATA_DIR` will allow the same directory structure to reside on another accessible drive. No cloud synchronization service is currently implemented.
 
 ## Environment setup
 
@@ -71,7 +67,7 @@ source myenv/bin/activate
 
 The script **only creates the virtual environment**; it does not install analysis dependencies. Python, Jupyter, DuckDB, PyArrow, Pandas, NumPy, and plotting dependencies will be configured as notebook implementation is added. Do not assume a pinned `requirements.txt` or finished run command exists yet.
 
-The planned large-data approach is to query and aggregate Parquet with **DuckDB**, and transfer only modest-sized results to Pandas for plotting. Avoid reading all ten years of hourly data into a Pandas DataFrame.
+The planned large-data approach is to query and aggregate Parquet with **DuckDB**, and transfer only modest-sized results to Pandas for plotting. Avoid reading the entire hourly dataset into a Pandas DataFrame.
 
 ## Repository guide
 
