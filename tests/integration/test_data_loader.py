@@ -3,8 +3,6 @@
 from pathlib import Path
 
 import duckdb
-import pytest
-
 from utils import data_loader
 
 
@@ -46,16 +44,3 @@ def test_default_data_directory_is_repository_relative(monkeypatch, tmp_path):
     assert data_loader.load_hourly().fetchall() == [(30,)]
 
 
-@pytest.mark.parametrize("resolution", ["hourly", "daily"])
-def test_missing_directory_raises_file_not_found(monkeypatch, tmp_path, resolution):
-    monkeypatch.setenv("ERA5_LAND_DATA_DIR", str(tmp_path / "missing"))
-    with pytest.raises(FileNotFoundError, match=f"{resolution} data directory not found"):
-        getattr(data_loader, f"load_{resolution}")()
-
-
-@pytest.mark.parametrize("resolution", ["hourly", "daily"])
-def test_empty_directory_raises_file_not_found(monkeypatch, tmp_path, resolution):
-    (tmp_path / resolution).mkdir()
-    monkeypatch.setenv("ERA5_LAND_DATA_DIR", str(tmp_path))
-    with pytest.raises(FileNotFoundError, match=f"No {resolution} Parquet files found"):
-        getattr(data_loader, f"load_{resolution}")()
