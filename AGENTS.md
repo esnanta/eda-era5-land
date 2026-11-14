@@ -20,7 +20,7 @@ Read the documents relevant to the task before editing.
 | [README.md](README.md) | **CURRENT BEHAVIOR / SETUP** | Actual repository contents, environment setup, data placement, usage, and attribution |
 | [docs/repo_guidelines.md](docs/repo_guidelines.md) | **REPOSITORY WORKFLOW** | Branch restrictions, small changes, testing, commits, and push safety |
 | [docs/python_se_principle.md](docs/python_se_principle.md) | **PYTHON DESIGN** | Pragmatic SOLID guided by DRY, KISS, and YAGNI |
-| [template/eda_starter.ipynb.ipynb](template/eda_starter.ipynb.ipynb) | **NOTEBOOK STRUCTURE** | Narrative layout, analysis presentation, interpretation, conclusions, and references |
+| [template/eda_starter.ipynb](template/eda_starter.ipynb) | **NOTEBOOK STRUCTURE** | Narrative layout, analysis presentation, interpretation, conclusions, and references |
 | [ds-notebook/01_exploratory_data_analysis.ipynb](ds-notebook/01_exploratory_data_analysis.ipynb) | **EDA METHOD REFERENCE** | First choice for data-science EDA methodology |
 | **AGENTS.md** | **INSTRUCTIONS** | Agent behavior and navigation |
 
@@ -70,7 +70,7 @@ data/all/
 
 The `data/` directory is ignored by Git. Support a configurable data root so a mounted external drive can use the same layout; do not build cloud-provider integrations prematurely.
 
-Prefer a **single small loader module with two functions**, `load_hourly()` and `load_daily()`, returning lazy DuckDB relations. Read the configured Parquet sources directly. Use DuckDB for large scans and aggregations; convert only suitably small results to Pandas for plotting. PyArrow may inspect schemas and metadata.
+Use the small **`utils/data_loader.py`** module with `load_hourly()` and `load_daily()`, returning lazy DuckDB relations. Read the configured Parquet sources directly. Use DuckDB for large scans and aggregations; convert only suitably small results to Pandas for plotting. PyArrow may inspect schemas and metadata.
 
 - Do not materialize the full hourly dataset in memory by default.
 - Detect absent files, incomplete years, and manifest/source mismatches explicitly.
@@ -92,9 +92,9 @@ Stage 1 must report four evidence-based categories: **Expected Source Characteri
 
 ## 7. Validation and completion
 
-Test focused Python helpers when introduced. For notebooks, validate structure, imports, file-path assumptions, query logic, and key scientific calculations against small representative datasets. Check that large-data queries remain bounded or aggregate before conversion to Pandas.
+Organize tests into `tests/unit/` and `tests/integration/`; follow [tests/AGENTS.md](tests/AGENTS.md) for testing instructions and [tests/README.md](tests/README.md) for the current suite and commands. Every test must exercise existing production code and verify an independently established behavior, not an algorithm copied into the test. Test focused Python helpers when introduced. For notebooks, validate structure, imports, file-path assumptions, query logic, and key scientific calculations against small representative datasets. Check that large-data queries remain bounded or aggregate before conversion to Pandas.
 
-If full data or an execution environment is unavailable, report precisely what was and was not tested. Never fabricate EDA results or claim a dataset is complete without examining its files and manifest.
+If full data or an execution environment is unavailable, report precisely what was and was not tested. **When DuckDB or PyArrow cannot be executed in the agent runtime, provide the exact verification command for the user's configured environment instead of requiring installation here or claiming tests passed.** Clearly distinguish user-run results from agent-run checks; reverify whenever code changes. Never fabricate EDA results or claim a dataset is complete without examining its files and manifest.
 
 Preserve upstream authorship, acknowledgements, citations, and relevant license notices. The README must retain the existing Dataquest acknowledgement and credit [CoenMeintjes' data-science notebook templates](https://github.com/CoenMeintjes/data_science_notebook_templates); data attribution for C3S/ECMWF must remain separate from template attribution.
 

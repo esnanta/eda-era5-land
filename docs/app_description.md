@@ -166,7 +166,7 @@ notebooks/
 └── 02_daily_climate_exploratory_analysis.ipynb
 ```
 
-Use [EDA Starter](../template/eda_starter.ipynb.ipynb) to guide narrative sections, clear explanations, and references. Use [the data science EDA notebook](../ds-notebook/01_exploratory_data_analysis.ipynb) as the first methodological reference; adapt generic “cleaning” examples to immutable scientific assessment.
+Use [EDA Starter](../template/eda_starter.ipynb) to guide narrative sections, clear explanations, and references. Use [the data science EDA notebook](../ds-notebook/01_exploratory_data_analysis.ipynb) as the first methodological reference; adapt generic “cleaning” examples to immutable scientific assessment.
 
 **Performance design:** DuckDB is the main engine for scanning and aggregating large Parquet files without loading all hourly rows into Pandas. PyArrow may inspect schema and metadata. Use Pandas/NumPy and plotting libraries on reduced results. Avoid adding Polars/Dask or cloud-specific integrations without a demonstrated need.
 

@@ -13,7 +13,7 @@ The project is being developed from existing EDA and data-science notebook templ
 
 Stage 1 will report **Expected Source Characteristics**, **Data Limitations and Incompleteness**, **Anomalies Requiring Investigation**, and **Confirmed Data Quality Issues**. Both stages will keep inputs unchanged and explain limitations in each finding.
 
-These notebooks will use the [EDA Starter notebook](template/eda_starter.ipynb.ipynb) for readable presentation and [the data-science EDA notebook](ds-notebook/01_exploratory_data_analysis.ipynb) as the first methodology reference. They are not required to copy template code or generic data-cleaning steps.
+These notebooks will use the [EDA Starter notebook](template/eda_starter.ipynb) for readable presentation and [the data-science EDA notebook](ds-notebook/01_exploratory_data_analysis.ipynb) as the first methodology reference. They are not required to copy template code or generic data-cleaning steps.
 
 ## Environment setup
 
@@ -22,9 +22,10 @@ The repository currently includes `setup_env.sh` for creating a Python virtual e
 ```bash
 sh setup_env.sh
 source myenv/bin/activate
+python -m pip install -r requirements.txt
 ```
 
-The script **only creates the virtual environment**; it does not install analysis dependencies. Python, Jupyter, DuckDB, PyArrow, Pandas, NumPy, and plotting dependencies will be configured as notebook implementation is added. Do not assume a pinned `requirements.txt` or finished run command exists yet.
+The setup script only creates the virtual environment; the separate pip command installs the Stage 1 analysis dependencies listed in [requirements.txt](requirements.txt). The two EDA notebooks are not implemented yet; the Parquet loader is available.
 
 The planned large-data approach is to query and aggregate Parquet with **DuckDB**, and transfer only modest-sized results to Pandas for plotting. Avoid reading the entire hourly dataset into a Pandas DataFrame.
 
@@ -62,7 +63,18 @@ data/
 
 `YYYY` represents any year for which an export is available. The EDA must discover existing files and report actual coverage, partial years, and gaps rather than assuming a predetermined period. Preserve files and manifests together, including their original contents. The repository's `.gitignore` excludes `data/`: do not commit Parquet files, manifests, or other large datasets.
 
-A future small loader module will expose **`load_hourly()`** and **`load_daily()`**, returning DuckDB relations. Local `data/all/` will be the default; an environment variable such as `ERA5_LAND_DATA_DIR` will allow the same directory structure to reside on another accessible drive. No cloud synchronization service is currently implemented.
+The current [`utils/data_loader.py`](utils/data_loader.py) provides **`load_hourly()`** and **`load_daily()`**, returning DuckDB relations backed by all matching annual Parquet files. The default location is `data/all/`, resolved from the repository directory rather than the notebook working directory. Set `ERA5_LAND_DATA_DIR` to another local or mounted `all/` directory when needed. The loader reads Parquet files only; manifest checks belong to Stage 1 analysis.
+
+```python
+from utils.data_loader import load_hourly
+
+hourly = load_hourly()
+print(hourly.aggregate("COUNT(*) AS rows").fetchall())
+```
+
+For daily data, use `from utils.data_loader import load_daily` and `daily = load_daily()`. Missing directories or matching Parquet files raise `FileNotFoundError`. No cloud synchronization service is implemented.
+
+Loader tests and their execution commands are documented in [tests/README.md](tests/README.md).
 
 
 ## Repository guide
@@ -73,9 +85,9 @@ A future small loader module will expose **`load_hourly()`** and **`load_daily()
 | [docs/app_description.md](docs/app_description.md) | EDA scope, scientific requirements, and acceptance criteria |
 | [docs/repo_guidelines.md](docs/repo_guidelines.md) | Branch, review, verification, and commit discipline |
 | [docs/python_se_principle.md](docs/python_se_principle.md) | Python design principles (SOLID guided by DRY/KISS/YAGNI) |
-| [template/eda_starter.ipynb.ipynb](template/eda_starter.ipynb.ipynb) | Original EDA writing and presentation template |
+| [tests/README.md](tests/README.md) | Current unit/integration test structure and commands |
+| [template/eda_starter.ipynb](template/eda_starter.ipynb) | Original EDA writing and presentation template |
 | [ds-notebook/](ds-notebook/) | Data-science notebook examples from CoenMeintjes |
-| [era5_land_notebook.ipynb](era5_land_notebook.ipynb) | Existing inherited notebook; not either of the planned EDA stages |
 | [setup_env.sh](setup_env.sh) | Creates the `myenv` virtual environment |
 
 Planned outputs from the completed notebooks will be under `eda/hourly_assessment/{reports,figures}/` and `eda/daily_analysis/{reports,figures}/`. Those output directories are **not evidence of completed analyses**.
