@@ -4,12 +4,6 @@ This project continues [`etl-weather`](https://github.com/esnanta/etl-weather) w
 
 The project is being developed from existing EDA and data-science notebook templates. Original authors and contributors are acknowledged below.
 
-## Project status
-
-**Documentation and design are being established.** The two ERA5-Land analysis notebooks and their supporting loader are **planned**, not yet implemented. Existing template notebooks are references, not completed climate analyses. No results or data-completeness claims should be inferred from this README.
-
-The scientific scope, data contracts, and acceptance criteria are defined in [docs/app_description.md](docs/app_description.md). Development instructions are in [AGENTS.md](AGENTS.md).
-
 ## Planned analyses
 
 | Stage | Notebook (planned) | Main purpose |
@@ -20,6 +14,20 @@ The scientific scope, data contracts, and acceptance criteria are defined in [do
 Stage 1 will report **Expected Source Characteristics**, **Data Limitations and Incompleteness**, **Anomalies Requiring Investigation**, and **Confirmed Data Quality Issues**. Both stages will keep inputs unchanged and explain limitations in each finding.
 
 These notebooks will use the [EDA Starter notebook](template/eda_starter.ipynb.ipynb) for readable presentation and [the data-science EDA notebook](ds-notebook/01_exploratory_data_analysis.ipynb) as the first methodology reference. They are not required to copy template code or generic data-cleaning steps.
+
+## Environment setup
+
+The repository currently includes `setup_env.sh` for creating a Python virtual environment:
+
+```bash
+sh setup_env.sh
+source myenv/bin/activate
+```
+
+The script **only creates the virtual environment**; it does not install analysis dependencies. Python, Jupyter, DuckDB, PyArrow, Pandas, NumPy, and plotting dependencies will be configured as notebook implementation is added. Do not assume a pinned `requirements.txt` or finished run command exists yet.
+
+The planned large-data approach is to query and aggregate Parquet with **DuckDB**, and transfer only modest-sized results to Pandas for plotting. Avoid reading the entire hourly dataset into a Pandas DataFrame.
+
 
 ## Study area and data
 
@@ -56,18 +64,6 @@ data/
 
 A future small loader module will expose **`load_hourly()`** and **`load_daily()`**, returning DuckDB relations. Local `data/all/` will be the default; an environment variable such as `ERA5_LAND_DATA_DIR` will allow the same directory structure to reside on another accessible drive. No cloud synchronization service is currently implemented.
 
-## Environment setup
-
-The repository currently includes `setup_env.sh` for creating a Python virtual environment:
-
-```bash
-sh setup_env.sh
-source myenv/bin/activate
-```
-
-The script **only creates the virtual environment**; it does not install analysis dependencies. Python, Jupyter, DuckDB, PyArrow, Pandas, NumPy, and plotting dependencies will be configured as notebook implementation is added. Do not assume a pinned `requirements.txt` or finished run command exists yet.
-
-The planned large-data approach is to query and aggregate Parquet with **DuckDB**, and transfer only modest-sized results to Pandas for plotting. Avoid reading the entire hourly dataset into a Pandas DataFrame.
 
 ## Repository guide
 
