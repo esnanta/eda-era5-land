@@ -1,78 +1,106 @@
-# EDA Starter Jupyter Notebook Template
-> As a Dataquest 11-time Community Champion and Learning Assistant, I review many notebooks from beginners focusing on exploratory data analysis (EDA).
-> As such, the purpose of publishing this notebook template to not for beginners to follow rigidly, but aim to make aware some of the structure, style, and common areas of analysis.  
+# ERA5-Land Exploratory Data Analysis — Aceh
 
+Exploratory data analysis (EDA) of **Copernicus CDS ERA5-Land** weather and land-surface data for the Aceh study area, **2016–2025**. This repository analyzes **existing Parquet exports** from the separate [`etl-weather` project](https://github.com/esnanta/etl-weather). It does not download or transform Copernicus source data.
 
-Uses cases:
-- data science projects focusing on EDA
+The project is being developed from existing EDA and data-science notebook templates. Original authors and contributors are acknowledged below.
 
+## Project status
 
-## Table of Contents
-* [General Info](#general-information)
-* [Technologies Used](#technologies-used)
-* [Features](#features)
-* [Screenshots](#screenshots)
-* [Setup](#setup)
-* [Usage](#usage)
-* [Project Status](#project-status)
-* [To Do](#to-do)
-* [Acknowledgements](#acknowledgements)
-* [Contact](#contact)
+**Documentation and design are being established.** The two ERA5-Land analysis notebooks and their supporting loader are **planned**, not yet implemented. Existing template notebooks are references, not completed climate analyses. No results or data-completeness claims should be inferred from this README.
 
+The scientific scope, data contracts, and acceptance criteria are defined in [docs/app_description.md](docs/app_description.md). Development instructions are in [AGENTS.md](AGENTS.md).
 
-## General Information
-The purpose of this project is to:
-- show data science beginners what structure, style, and common areas of analysis to consider. 
-- demonstrate how to do certain things in Markdown and HTML, such as clickable Table of Content, HTML tables, 2-way citations, and referencing.
-- demonstrate how to perform common EDA steps in Python.
+## Planned analyses
 
-## Technologies Used
-- Markdown
+| Stage | Notebook (planned) | Main purpose |
+| --- | --- | --- |
+| **1 — Hourly Data Quality Assessment** | `notebooks/01_hourly_data_quality_assessment.ipynb` | Evaluate hourly file/manifest coverage, timestamps, 0.1° spatial grid, NULL/NaN, missing records, distributions, and anomalies |
+| **2 — Daily Climate Exploratory Analysis** | `notebooks/02_daily_climate_exploratory_analysis.ipynb` | Explore daily rainfall, temperature, dewpoint, soil moisture, solar radiation, wind, seasonal and interannual variation, and spatial differences |
 
+Stage 1 will report **Expected Source Characteristics**, **Data Limitations and Incompleteness**, **Anomalies Requiring Investigation**, and **Confirmed Data Quality Issues**. Both stages will keep inputs unchanged and explain limitations in each finding.
 
-## Features
-- Table of Contents to the main sections.
-- HTML table to display desciptions of the attributes of the dataset.
-- Common imports and notebook settings
-- Common methods and considerations of preprocessing.
-- 2-way citations
-- Referencing style
-- Rename DataFrame columns to snake_case using the [Skimpy](https://aeturrell.github.io/skimpy/) library.
+These notebooks will use the [EDA Starter notebook](template/eda_starter.ipynb.ipynb) for readable presentation and [the data-science EDA notebook](ds-notebook/01_exploratory_data_analysis.ipynb) as the first methodology reference. They are not required to copy template code or generic data-cleaning steps.
 
+## Study area and data
 
-## Screenshots
-![](https://user-images.githubusercontent.com/25447529/226967831-ebb53e07-c9a7-4c65-8710-e372321d91e5.png)
-![](https://user-images.githubusercontent.com/25447529/226967873-bf34ec76-21e2-4eb3-a2b0-e5c94956adb2.png)
-![](https://user-images.githubusercontent.com/25447529/226967899-2d2bb170-0694-4319-895e-98d5a95bba68.png)
+| Item | Scope |
+| --- | --- |
+| Dataset | C3S ERA5-Land (`reanalysis-era5-land`) |
+| Study period | 1 January 2016 – 31 December 2025 |
+| Bounding box | North 6.1°, south 1.9°, west 94.9°, east 98.3° |
+| Expected grid | Regular 0.1° × 0.1°; 43 latitude values × 35 longitude values = **1,505 grid points** |
+| Hourly time | UTC |
+| Daily time | UTC+7 calendar days, calculated upstream |
+| File format | Parquet with accompanying `manifest.json` |
 
+The bounding box is rectangular: it includes sea and may include areas outside Aceh's administrative boundary. **Not every grid point is expected to have a valid land-surface measurement.** NULL/NaN values must be assessed, not automatically classified as errors or automatically identified as sea. Actual year/month coverage must be checked against the files and manifests.
 
-## Setup
-Create a Python virtual environment named `myenv`:
+Upstream provider variables are `tp`, `t2m`, `d2m`, `swvl1`, `swvl2`, `swvl3`, `ssrd`, `u10`, and `v10`. The daily export additionally contains derived `wind_speed` and `wind_direction`. Variable meanings, units, and time-aggregation constraints are specified in [docs/app_description.md](docs/app_description.md).
 
-```sh
+## Dataset placement
+
+Copy the **existing offline analytics exports** from `etl-weather` into:
+
+```text
+data/
+└── all/
+    ├── hourly/
+    │   ├── 2016_hourly.parquet
+    │   ├── ...
+    │   ├── 2025_hourly.parquet
+    │   └── manifest.json
+    └── daily/
+        ├── 2016_daily.parquet
+        ├── ...
+        ├── 2025_daily.parquet
+        └── manifest.json
+```
+
+The example shows the intended naming for the full study period; **only copy years that were actually exported**. Preserve files and manifests together, including their original contents. The repository's `.gitignore` excludes `data/`: do not commit Parquet files, manifests, or other large datasets.
+
+A future small loader module will expose **`load_hourly()`** and **`load_daily()`**, returning DuckDB relations. Local `data/all/` will be the default; an environment variable such as `ERA5_LAND_DATA_DIR` will allow the same directory structure to reside on another accessible drive. No cloud synchronization service or direct coupling to `etl-weather` is currently implemented.
+
+## Environment setup
+
+The repository currently includes `setup_env.sh` for creating a Python virtual environment:
+
+```bash
 sh setup_env.sh
 source myenv/bin/activate
 ```
 
-Run these commands from the project directory. To leave the environment, run
-`deactivate`.
+The script **only creates the virtual environment**; it does not install analysis dependencies. Python, Jupyter, DuckDB, PyArrow, Pandas, NumPy, and plotting dependencies will be configured as notebook implementation is added. Do not assume a pinned `requirements.txt` or finished run command exists yet.
 
+The planned large-data approach is to query and aggregate Parquet with **DuckDB**, and transfer only modest-sized results to Pandas for plotting. Avoid reading all ten years of hourly data into a Pandas DataFrame.
 
-## Usage
-Just download the eda-starter.ipynb file and use.
+## Repository guide
 
+| Location | Current role |
+| --- | --- |
+| [AGENTS.md](AGENTS.md) | Instructions for coding agents |
+| [docs/app_description.md](docs/app_description.md) | EDA scope, scientific requirements, and acceptance criteria |
+| [docs/repo_guidelines.md](docs/repo_guidelines.md) | Branch, review, verification, and commit discipline |
+| [docs/python_se_principle.md](docs/python_se_principle.md) | Python design principles (SOLID guided by DRY/KISS/YAGNI) |
+| [template/eda_starter.ipynb.ipynb](template/eda_starter.ipynb.ipynb) | Original EDA writing and presentation template |
+| [ds-notebook/](ds-notebook/) | Data-science notebook examples from CoenMeintjes |
+| [era5_land_notebook.ipynb](era5_land_notebook.ipynb) | Existing inherited notebook; not either of the planned EDA stages |
+| [setup_env.sh](setup_env.sh) | Creates the `myenv` virtual environment |
 
-# Project Status
-Project is _completed_.
-Latest Version: 1.5.0
+Planned outputs from the completed notebooks will be under `eda/hourly_assessment/{reports,figures}/` and `eda/daily_analysis/{reports,figures}/`. Those output directories are **not evidence of completed analyses**.
 
+## Scientific data attribution
 
-## To Do
+This project uses data produced by the **Copernicus Climate Change Service (C3S)** and operated through the **European Centre for Medium-Range Weather Forecasts (ECMWF)**. When publishing analysis, cite the specific ERA5-Land CDS catalogue entry and relevant documentation according to the provider's citation guidance. Notebook templates and data sources are separate forms of contribution.
 
+- [ERA5-Land hourly data — CDS](https://cds.climate.copernicus.eu/datasets/reanalysis-era5-land)
+- [The family of ERA5 datasets — ECMWF](https://confluence.ecmwf.int/spaces/CKB/pages/181127817/The+family+of+ERA5+datasets)
 
-## Acknowledgements
+## Acknowledgements and project origins
+
+This repository builds on an existing **EDA Starter Jupyter Notebook Template**, with original template authorship associated with [@chuawt](https://chuawt.github.io). We preserve the original acknowledgement below:
+
 Many thanks to the entire Dataquest community especially @Elena_Kosourova for your support and @gorelovaelizaveta01 for [your template](https://community.dataquest.io/t/template-for-jupyter-notebooks/567750) inspiration.
 
+Additional thanks to **[CoenMeintjes](https://github.com/CoenMeintjes)** for [Data Science Jupyter Notebook Templates](https://github.com/CoenMeintjes/data_science_notebook_templates), used as reference material in the `ds-notebook/` directory and as a methodological starting point for the EDA notebooks.
 
-## Contact
-Created by [@chuawt](https://chuawt.github.io) - feel free to contact me!
+These acknowledgements recognize the contributions of the upstream template creators; the climate-analysis scope and code are being developed separately. Existing copyright and license obligations, where applicable, must still be respected.
