@@ -92,7 +92,7 @@ Stage 1 must report four evidence-based categories: **Expected Source Characteri
 
 ## 7. Validation and completion
 
-Test focused Python helpers when introduced. For notebooks, validate structure, imports, file-path assumptions, query logic, and key scientific calculations against small representative datasets. Check that large-data queries remain bounded or aggregate before conversion to Pandas.
+Organize tests into `tests/unit/` and `tests/integration/`; follow [tests/AGENTS.md](tests/AGENTS.md) for testing instructions and [tests/README.md](tests/README.md) for the current suite and commands. Every test must exercise existing production code and verify an independently established behavior, not an algorithm copied into the test. Test focused Python helpers when introduced. For notebooks, validate structure, imports, file-path assumptions, query logic, and key scientific calculations against small representative datasets. Check that large-data queries remain bounded or aggregate before conversion to Pandas.
 
 If full data or an execution environment is unavailable, report precisely what was and was not tested. **When DuckDB or PyArrow cannot be executed in the agent runtime, provide the exact verification command for the user's configured environment instead of requiring installation here or claiming tests passed.** Clearly distinguish user-run results from agent-run checks; reverify whenever code changes. Never fabricate EDA results or claim a dataset is complete without examining its files and manifest.
 
