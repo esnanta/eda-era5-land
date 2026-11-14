@@ -1,7 +1,5 @@
 """Test loader failure handling and path selection without reading Parquet data."""
 
-from pathlib import Path
-
 import pytest
 
 from utils import data_loader
@@ -53,8 +51,17 @@ def test_loader_passes_matching_files_to_duckdb(monkeypatch, tmp_path):
 
 
 def test_default_root_is_not_relative_to_working_directory(monkeypatch, tmp_path):
-    expected_root = Path(data_loader.__file__).resolve().parent.parent / "data" / "all"
+    root = tmp_path / "other" / "all"
+    folder = root / "hourly"
+    folder.mkdir(parents=True)
+    (folder / "2024_hourly.parquet").touch()
     monkeypatch.delenv("ERA5_LAND_DATA_DIR", raising=False)
+    monkeypatch.setattr(data_loader, "_DEFAULT_DATA_DIR", root)
     monkeypatch.chdir(tmp_path)
 
-    assert data_loader._DEFAULT_DATA_DIR == expected_root
+    observed = []
+    monkeypatch.setattr(data_loader.duckdb, "read_parquet", lambda paths: observed.extend(paths))
+
+    data_loader.load_hourly()
+
+    assert observed == [str(folder / "2024_hourly.parquet")]
