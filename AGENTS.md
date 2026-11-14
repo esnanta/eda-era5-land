@@ -4,9 +4,8 @@
 
 ## 1. Project boundaries
 
-This repository analyzes **Copernicus CDS ERA5-Land** data for the Aceh study area, covering **2016–2025**. It consumes previously exported hourly and daily Parquet datasets from [`etl-weather`](https://github.com/esnanta/etl-weather).
+This repository analyzes **Copernicus CDS ERA5-Land** hourly and daily Parquet data for the Aceh study area. The analysis period is determined from the datasets actually available, not from a fixed range of years.
 
-- Treat `etl-weather` as **read-only upstream context**. Do not change that repository, import its Python modules, invoke its ETL pipeline, or reproduce its extraction/transformation responsibilities here.
 - This repository performs assessment, exploration, visualization, and reporting. It does **not** download CDS data or update canonical climate observations.
 - Treat input Parquet and `manifest.json` files as immutable. Never silently repair, overwrite, delete, or fill source values.
 - Do not infer that all grid points are on land or that every NULL/NaN is a data defect.
@@ -38,8 +37,6 @@ Follow [repository guidelines](docs/repo_guidelines.md) in full. In particular:
 5. Commit small, verified changes separately, with descriptive English messages.
 6. Never force-push, rewrite history, merge branches, or create pull requests without explicit authorization. Push only to `dev` when authorized.
 7. Report changed files, tests run, any verification limits, and commit hashes.
-
-Do not change the upstream `etl-weather` repository under any circumstances in this project.
 
 ## 4. Notebook design: simple and scientific
 
@@ -73,9 +70,9 @@ data/all/
 
 The `data/` directory is ignored by Git. Support a configurable data root so a mounted external drive can use the same layout; do not build cloud-provider integrations prematurely.
 
-Prefer a **single small loader module with two functions**, `load_hourly()` and `load_daily()`, returning lazy DuckDB relations. Read source files rather than importing `etl-weather` code. Use DuckDB for large scans and aggregations; convert only suitably small results to Pandas for plotting. PyArrow may inspect schemas and metadata.
+Prefer a **single small loader module with two functions**, `load_hourly()` and `load_daily()`, returning lazy DuckDB relations. Read the configured Parquet sources directly. Use DuckDB for large scans and aggregations; convert only suitably small results to Pandas for plotting. PyArrow may inspect schemas and metadata.
 
-- Do not materialize the full ten-year hourly dataset in memory by default.
+- Do not materialize the full hourly dataset in memory by default.
 - Detect absent files, incomplete years, and manifest/source mismatches explicitly.
 - Preserve timestamps, coordinates, units, and missing values. Do not replace NULL/NaN with zero or drop rows merely to simplify analysis.
 - Keep the input files read-only; write reports and figures to separate output directories.
@@ -84,9 +81,9 @@ Prefer a **single small loader module with two functions**, `load_hourly()` and 
 
 Use [the scientific specification](docs/app_description.md) as the authority for study limits, variable meaning, expected grid, and temporal semantics.
 
-- Study period: **2016-01-01 through 2025-12-31**; bbox: **north 6.1, south 1.9, west 94.9, east 98.3**.
+- Determine the analysis period dynamically from available files, manifests, and observed timestamps; report gaps and partial coverage. The study bbox is **north 6.1, south 1.9, west 94.9, east 98.3**.
 - The expected regular **0.1° grid contains 43 latitudes × 35 longitudes = 1,505 points**, including non-Aceh and marine locations in the bounding rectangle.
-- Hourly timestamps are in **UTC**; the upstream daily product is aggregated by **UTC+7 local days**. Do not conflate the two.
+- Hourly timestamps are in **UTC**; the daily product uses **UTC+7 local days**. Do not conflate the two.
 - Distinguish **missing rows/timestamps**, missing values within existing rows, and **expected land-surface missingness**. An all-NULL grid point does not by itself prove it is a sea point; land/sea classification requires independent spatial evidence.
 - Distinguish instantaneous variables from accumulated quantities and derived wind variables; do not apply the same aggregation to all fields.
 - Treat extreme values as **investigation candidates**, not automatically removable errors.
