@@ -1,6 +1,6 @@
 # Stage 1 — Hourly Data Quality Assessment: Implementation Checklist
 
-**Status:** In progress — Step 1 complete; Step 2 loader moved to `utils/`, rerun tests pending  
+**Status:** In progress — Step 1 complete; Step 2 tests reorganized by level, rerun verification pending  
 **Branch:** `dev` only  
 **Scope:** Build and validate the first ERA5-Land EDA notebook using whatever hourly Parquet data is available. Do not assume a fixed analysis period.
 
@@ -35,7 +35,7 @@ Inputs are **read-only** under `data/all/hourly/` (or a configured external data
 - [x] Permit a different local or mounted data root through `ERA5_LAND_DATA_DIR`; keep `data/all/` as the default.
 - [x] Raise a clear error for missing directories or matching Parquet files.
 - [x] Keep all source files and manifests immutable; do not load the entire dataset into Pandas by default.
-- [x] Add focused tests using small temporary Parquet fixtures for both functions, missing files, and configurable paths.
+- [x] Add focused unit and integration tests in `tests/unit/` and `tests/integration/` covering both functions, missing files, and configurable paths.
 - [ ] Run relevant tests, review the diff, and commit.
 
 **Done when:** both loader functions work on small fixtures and fail clearly on missing input, without changing source files.
@@ -114,6 +114,7 @@ Add one short row for each completed logical change. Do not mark incomplete work
 | 2026-11-14 | 1 — Dependencies and setup docs | `09e3073`, `24ff093` | Added eight dependencies; updated README installation command. Requirement syntax validated; Python virtual environment created in verification environment. **User independently confirmed all eight imports succeeded in the project environment** with `python -c ...`. |
 | 2026-11-14 | 2 — Loader implementation | `536c3de`, `a4b38ad`, `94e5235` | Added two DuckDB Parquet loaders and seven parametrized test cases. **User confirmed `7 passed in 0.22s` for the original root-level loader**, before its relocation. |
 | 2026-11-14 | 2 — Loader relocation and testing docs | `0f15301`, `86a6a02`, `824aa55`, `216930f`, `aa60088`, `932dda6`, `225fdea`, `0725a41` | Moved loader to `utils/`, updated imports and test documentation, and placed the agent-runtime dependency limitation in AGENTS. **Rerun tests on this revised version** before closing Step 2; the prior 7 passed does not verify the relocated import. |
+| 2026-11-14 | 2 — Test-level separation | `b0431fe`, `c79552d`, `fdc9014`, `d53a789`, `054132b`, `4c5ea25`, `229d817`, `8afa09b`, `9c71e2f`, `1bfb6a1` | Split actual production-loader tests into unit (isolated paths/errors) and integration (real DuckDB/Parquet). Tests call production code, not copied test algorithms. Updated instruction/setup document roles. **Execution on this revision remains pending.** |
 
 ## Completion policy
 
