@@ -63,18 +63,18 @@ data/
 
 `YYYY` represents any year for which an export is available. The EDA must discover existing files and report actual coverage, partial years, and gaps rather than assuming a predetermined period. Preserve files and manifests together, including their original contents. The repository's `.gitignore` excludes `data/`: do not commit Parquet files, manifests, or other large datasets.
 
-The current [`data_loader.py`](data_loader.py) provides **`load_hourly()`** and **`load_daily()`**, returning DuckDB relations backed by all matching annual Parquet files. The default location is `data/all/`, resolved from the repository directory rather than the notebook working directory. Set `ERA5_LAND_DATA_DIR` to another local or mounted `all/` directory when needed. The loader reads Parquet files only; manifest checks belong to Stage 1 analysis.
+The current [`utils/data_loader.py`](utils/data_loader.py) provides **`load_hourly()`** and **`load_daily()`**, returning DuckDB relations backed by all matching annual Parquet files. The default location is `data/all/`, resolved from the repository directory rather than the notebook working directory. Set `ERA5_LAND_DATA_DIR` to another local or mounted `all/` directory when needed. The loader reads Parquet files only; manifest checks belong to Stage 1 analysis.
 
 ```python
-from data_loader import load_hourly
+from utils.data_loader import load_hourly
 
 hourly = load_hourly()
 print(hourly.aggregate("COUNT(*) AS rows").fetchall())
 ```
 
-For daily data, use `from data_loader import load_daily` and `daily = load_daily()`. Missing directories or matching Parquet files raise `FileNotFoundError`. No cloud synchronization service is implemented.
+For daily data, use `from utils.data_loader import load_daily` and `daily = load_daily()`. Missing directories or matching Parquet files raise `FileNotFoundError`. No cloud synchronization service is implemented.
 
-Loader tests are in `tests/test_data_loader.py` and can be run with `python -m pytest tests/test_data_loader.py -q`. These tests have been added but have not yet been executed successfully in the implementation environment, where DuckDB installation is unavailable; execute them in the configured project environment before treating Step 2 as fully verified.
+Loader tests and their execution commands are documented in [tests/README.md](tests/README.md).
 
 
 ## Repository guide
