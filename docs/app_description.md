@@ -4,7 +4,7 @@
 
 ## 1. Purpose and scope
 
-This project continues the work of [`etl-weather`](https://github.com/esnanta/etl-weather) by conducting reproducible exploratory data analysis (EDA) of **Copernicus Climate Change Service (C3S) ERA5-Land** hourly and daily Parquet data for the Aceh study area. **The analysis period follows the data actually available**, rather than a predetermined set of years.
+This project continues the work of [`etl-weather`](https://github.com/esnanta/etl-weather) by conducting reproducible exploratory data analysis (EDA) of **Copernicus Climate Data Store (CDS) ERA5-Land** hourly and daily Parquet data for the Aceh study area. **The analysis period follows the data actually available**, rather than a predetermined set of years.
 
 Two complementary stages serve distinct purposes:
 
@@ -196,4 +196,4 @@ Prefer **one small module with `load_hourly()` and `load_daily()` functions**, r
 
 Use the supplied ECMWF/Copernicus documentation and authoritative ERA5-Land guidance when interpreting accumulated variables, analysis/forecast distinctions, temperature, and winds. Note that several supplied documents describe **ERA5**, which is related to but not identical with **ERA5-Land**; never transfer dataset-specific timing rules without checking applicability.
 
-Preserve upstream notebook acknowledgements and cite the C3S/ECMWF dataset appropriately in published analysis. Specific acknowledgement and current repository setup belong in [README.md](../README.md).
+Preserve upstream notebook acknowledgements and cite the CDS/ECMWF dataset appropriately in published analysis. Specific acknowledgement and current repository setup belong in [README.md](../README.md).
