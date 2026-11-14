@@ -1,48 +1,60 @@
 # Tests — Agent Instructions
 
-**Role: testing rules for `tests/`.** Read [root AGENTS.md](../AGENTS.md), [scientific requirements](../docs/app_description.md), and [repository guidelines](../docs/repo_guidelines.md) first. Human-facing test commands belong in [tests/README.md](README.md).
+**Role: HOW TO TEST.** These instructions govern changes inside `tests/`. Follow [root AGENTS.md](../AGENTS.md), [the scientific specification](../docs/app_description.md), and [repository guidelines](../docs/repo_guidelines.md). The [tests README](README.md) owns **CURRENT TEST STRUCTURE / HOW TO RUN**, not agent instructions.
 
-## Scope
+## 1. Production-first test design
 
-Tests protect the behavior of the **ERA5-Land EDA** tools and scientific assessment logic. Keep tests focused on the code and contracts actually implemented in this repository.
+**Every test must be justified by an existing production script, function, or explicit scientific contract. A test must not test its own imitation of an implementation.**
 
-- Prefer fast, deterministic, offline `pytest` tests.
-- Use small, temporary Parquet fixtures, with explicitly controlled timestamps, coordinates, values, NULLs, and NaNs where needed.
-- Tests must **never write into `data/all/`**, modify source Parquet files, or require a CDS download or live external service.
-- Keep the current tests directly under `tests/`. Add subdirectories only if the suite grows enough to need them.
-- Use readable test names and a concise module docstring describing what the tests verify.
+Before writing or changing a test:
+1. Identify the **production entry point under test** (currently `utils/data_loader.py`), the behavior it promises, and the failure it should detect.
+2. Invoke that real production entry point. Do not copy its algorithm into a helper and then assert that the copied algorithm works.
+3. Use independently specified expected values and small fixtures; do not derive expected results from the same production computation being asserted.
+4. Mock **only justified boundaries**, such as a DuckDB read call when unit-testing file selection. Never mock away the behavior being tested.
+5. Do not invent a production API, feature, or abstract model solely to make a test exist. Implement a behavior first, then protect it with tests.
+6. If the requirement is only planned and there is no code yet, keep its test in the implementation checklist instead of creating a test against a hypothetical implementation.
 
-## Data loader contracts
+Keep tests readable, deterministic, and minimal. Use `pytest`, `tmp_path`, and `monkeypatch` where they improve isolation. Add a short module-level docstring naming the production contract.
 
-Test [`utils/data_loader.py`](../utils/data_loader.py) through its public functions `load_hourly()` and `load_daily()`.
+## 2. Test levels and ownership
 
-- The default data root is the repository's `data/all/`, independent of the current working directory.
-- `ERA5_LAND_DATA_DIR` may point to another local or mounted `all/` directory.
-- Discover any available `YYYY_hourly.parquet` or `YYYY_daily.parquet` files. Do not require a predetermined year range.
-- Reject missing folders or folders without matching files with understandable `FileNotFoundError` messages.
-- Return **DuckDB relations**, not eagerly materialized Pandas DataFrames.
-- Ignore unrelated files while preserving input Parquet and `manifest.json` contents.
+Organize tests **by level**:
 
-Use `tmp_path` for file fixtures and `monkeypatch` for environment variables. Test the public behavior rather than duplicating the loader implementation in test code.
+```text
+tests/
+├── unit/
+│   └── test_data_loader.py
+└── integration/
+    └── test_data_loader.py
+```
 
-## Scientific assessment contracts
+**Unit tests** validate one production function or narrowly scoped decision in isolation: path resolution, filename filtering, errors, and other logic that does not need a real Parquet read. Mock collaborators only at legitimate external boundaries. A unit test should fail when the real function's behavior changes incorrectly.
 
-As notebook analysis grows, add focused tests for calculations that can be verified independently:
+**Integration tests** verify real interaction among implemented components, for example `utils.data_loader` + DuckDB + temporary Parquet files. Test both input resolutions, actual relation results, and read-only preservation. Integration fixtures remain **local and offline**; do not require the real study dataset, CDS access, or cloud storage.
 
-- UTC hourly continuity; distinguish absent timestamps/rows from NULL or NaN values in present observations.
-- Unique `(timestamp, latitude, longitude)` combinations and spatial grid coverage.
-- Missingness denominators and separate NULL/NaN accounting where the schema allows.
-- Correct timezones and variable units; use ERA5-Land-specific accumulation semantics when relevant.
-- Classification of observations as expected characteristics, limitations, unverified anomalies, or **confirmed** issues only when evidence justifies the claim.
+Do not duplicate the same assertions across levels without a distinct purpose. Do not create additional levels or subdirectories without a real need.
 
-Never infer that every NULL/NaN identifies sea. Do not delete, fill, or silently repair unusual meteorological values.
+## 3. Scientific data integrity
 
-## Verification and reporting
+When scientific assessment logic exists, test its **real functions or reproducible notebook calculations**, using explicit tiny timestamps, grid points, and meteorological values.
 
-- Run the narrowest relevant tests after each change, then broaden coverage when appropriate.
-- If an agent's runtime lacks DuckDB, PyArrow, or other required packages and installation is unavailable, **do not block preparation or pretend the tests passed**. Check syntax/static structure if feasible, give the exact test command for the user's configured environment, and mark execution as pending.
-- A user-provided test result may be recorded as **user-run verification**, clearly distinguished from agent-run tests. After changing imports or behavior, request/rerun verification of the **new code**; prior passing tests do not prove the revision.
-- Mark `todo/` checklist items `[x]` only when the specified implementation and relevant verification have actually occurred.
-- Review changes and commit small logical steps to `dev` only, following the repository guidelines.
+- Distinguish absent records from NULL/NaN in present records.
+- Check UTC hourly continuity and uniqueness of `(timestamp, latitude, longitude)`.
+- Validate spatial coverage against the relevant configured grid; use smaller synthetic grids for focused algorithm tests.
+- Respect ERA5-Land accumulated-variable semantics and units.
+- Never infer sea locations solely from NULL/NaN or silently fill missing observations.
+- Test findings and classifications against **independent evidence**, not an assertion copied from the computation itself.
 
-**Keep tests simple and evidence-based.**
+Do not claim these tests exist before corresponding analysis code has been implemented.
+
+## 4. Safety and verification
+
+- Always use temporary directories and test files. **Never write to or overwrite `data/all/`**.
+- Do not modify source Parquet or manifests; do not require live external services for routine tests.
+- Run relevant unit tests first, then integration tests, then the full suite as appropriate.
+- **When the agent runtime cannot execute DuckDB or PyArrow**, perform available static checks and ask the user to run the exact documented commands in their configured environment. Report any user-provided results as **user-run verification**. Previous passes do not prove a modified version of the code.
+- A test passing is evidence only for the behavior it actually exercised. `--collect-only` and syntax checks are not test execution.
+- Mark `todo/` checkboxes complete only after the appropriate work and verification; preserve any known pending checks.
+- Keep changes small, review diffs, and commit only to `dev`.
+
+**Core rule: Test production behavior, not test-created behavior.**
