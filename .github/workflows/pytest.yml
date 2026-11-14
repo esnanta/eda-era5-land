@@ -1,0 +1,36 @@
+name: Run Pytest
+
+on:
+  push:
+    branches: [ "main", "dev" ]
+  pull_request:
+    branches: [ "main", "dev" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      APP_ENV: dev
+      CAMPAIGN_KEY: era5_land_2016_2025
+      CAMPAIGN_START_YEAR: "2016"
+      CAMPAIGN_END_YEAR: "2016"
+      CDS_START_DATE: "2022-01-01"
+      CDS_END_DATE: "2022-01-03"
+
+    steps:
+    - name: Check out repository code
+      uses: actions/checkout@v5
+
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.12'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then python -m pip install -r requirements.txt; fi
+
+    - name: Run pytest
+      run: |
+        python -m pytest
