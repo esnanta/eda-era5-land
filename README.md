@@ -25,7 +25,7 @@ These notebooks will use the [EDA Starter notebook](template/eda_starter.ipynb.i
 
 | Item | Scope |
 | --- | --- |
-| Dataset | C3S ERA5-Land (`reanalysis-era5-land`) |
+| Dataset | Copernicus Climate Data Store (CDS) ERA5-Land (`reanalysis-era5-land`) |
 | Analysis period | Determined from available Parquet files, manifests, and observed timestamps |
 | Bounding box | North 6.1°, south 1.9°, west 94.9°, east 98.3° |
 | Expected grid | Regular 0.1° × 0.1°; 43 latitude values × 35 longitude values = **1,505 grid points** |
@@ -86,7 +86,7 @@ Planned outputs from the completed notebooks will be under `eda/hourly_assessmen
 
 ## Scientific data attribution
 
-This project uses data produced by the **Copernicus Climate Change Service (C3S)** and operated through the **European Centre for Medium-Range Weather Forecasts (ECMWF)**. When publishing analysis, cite the specific ERA5-Land CDS catalogue entry and relevant documentation according to the provider's citation guidance. Notebook templates and data sources are separate forms of contribution.
+This project uses data produced by the **Copernicus Climate Data Store (CDS)** and operated through the **European Centre for Medium-Range Weather Forecasts (ECMWF)**. When publishing analysis, cite the specific ERA5-Land CDS catalogue entry and relevant documentation according to the provider's citation guidance. Notebook templates and data sources are separate forms of contribution..
 
 - [ERA5-Land hourly data — CDS](https://cds.climate.copernicus.eu/datasets/reanalysis-era5-land)
 - [The family of ERA5 datasets — ECMWF](https://confluence.ecmwf.int/spaces/CKB/pages/181127817/The+family+of+ERA5+datasets)
