@@ -8,7 +8,7 @@ The project is being developed from existing EDA and data-science notebook templ
 
 | Stage | Notebook (planned) | Main purpose |
 | --- | --- | --- |
-| **1 — Hourly Data Quality Assessment** | `notebooks/01_hourly_data_quality_assessment.ipynb` | Evaluate hourly file/manifest coverage, timestamps, 0.1° spatial grid, NULL/NaN, missing records, distributions, and anomalies |
+| **1 — Hourly Data Quality Assessment** | [`notebooks/01_hourly_data_quality_assessment.ipynb`](notebooks/01_hourly_data_quality_assessment.ipynb) *(inventory section available; remainder planned)* | Inventory hourly files, schema, manifest structure, and observed date coverage; integrity, missingness, and anomaly checks remain planned |
 | **2 — Daily Climate Exploratory Analysis** | `notebooks/02_daily_climate_exploratory_analysis.ipynb` | Explore daily rainfall, temperature, dewpoint, soil moisture, solar radiation, wind, seasonal and interannual variation, and spatial differences |
 
 Stage 1 will report **Expected Source Characteristics**, **Data Limitations and Incompleteness**, **Anomalies Requiring Investigation**, and **Confirmed Data Quality Issues**. Both stages will keep inputs unchanged and explain limitations in each finding.
@@ -25,7 +25,7 @@ source myenv/bin/activate
 python -m pip install -r requirements.txt
 ```
 
-The setup script only creates the virtual environment; the separate pip command installs the Stage 1 analysis dependencies listed in [requirements.txt](requirements.txt). The two EDA notebooks are not implemented yet; the Parquet loader is available.
+The setup script only creates the virtual environment; the separate pip command installs the Stage 1 analysis dependencies listed in [requirements.txt](requirements.txt). The hourly Stage 1 notebook now contains a **dataset inventory section**; the full Stage 1 assessment and Stage 2 notebook are not implemented yet.
 
 The planned large-data approach is to query and aggregate Parquet with **DuckDB**, and transfer only modest-sized results to Pandas for plotting. Avoid reading the entire hourly dataset into a Pandas DataFrame.
 
@@ -76,6 +76,24 @@ For daily data, use `from utils.data_loader import load_daily` and `daily = load
 
 Loader tests and their execution commands are documented in [tests/README.md](tests/README.md).
 
+## Hourly inventory (Stage 1 — initial implementation)
+
+Start JupyterLab from the repository root and open [the Stage 1 notebook](notebooks/01_hourly_data_quality_assessment.ipynb):
+
+```bash
+jupyter lab
+```
+
+The inventory section uses [`utils/dataset_inventory.py`](utils/dataset_inventory.py) to list available annual files, read Parquet footer row counts/schema, and query the observed UTC timestamp range and represented months. It displays the manifest's top-level structure, but **does not yet verify manifest checksums or prove monthly completeness**. The local `data/all/hourly/` directory must contain Parquet files; real dataset findings appear only after execution on that data.
+
+The automated inventory tests can be run separately:
+
+```bash
+python -m pytest tests/unit/test_dataset_inventory.py -q
+python -m pytest tests/integration/test_dataset_inventory.py -q
+```
+
+
 
 ## Repository guide
 
@@ -101,10 +119,10 @@ This project uses data produced by the **Copernicus Climate Data Store (CDS)** a
 
 ## Acknowledgements and project origins
 
-This repository builds on an existing **EDA Starter Jupyter Notebook Template**, with original template authorship associated with [@chuawt](https://chuawt.github.io). We preserve the original acknowledgement below:
+1. This repository builds on an existing **EDA Starter Jupyter Notebook Template**, with original template authorship associated with [@chuawt](https://chuawt.github.io). We preserve the original acknowledgement below:
 
-Many thanks to the entire Dataquest community especially @Elena_Kosourova for your support and @gorelovaelizaveta01 for [your template](https://community.dataquest.io/t/template-for-jupyter-notebooks/567750) inspiration.
+    Many thanks to the entire Dataquest community especially @Elena_Kosourova for your support and @gorelovaelizaveta01 for [your template](https://community.dataquest.io/t/template-for-jupyter-notebooks/567750) inspiration.
 
-Additional thanks to **[CoenMeintjes](https://github.com/CoenMeintjes)** for [Data Science Jupyter Notebook Templates](https://github.com/CoenMeintjes/data_science_notebook_templates), used as reference material in the `ds-notebook/` directory and as a methodological starting point for the EDA notebooks.
+2. Additional thanks to **[CoenMeintjes](https://github.com/CoenMeintjes)** for [Data Science Jupyter Notebook Templates](https://github.com/CoenMeintjes/data_science_notebook_templates), used as reference material in the `ds-notebook/` directory and as a methodological starting point for this EDA notebooks.
 
 These acknowledgements recognize the contributions of the upstream template creators; the climate-analysis scope and code are being developed separately. Existing copyright and license obligations, where applicable, must still be respected.

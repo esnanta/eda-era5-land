@@ -1,6 +1,6 @@
 # Stage 1 — Hourly Data Quality Assessment: Implementation Checklist
 
-**Status:** In progress — Steps 1 and 2 complete; Stage 1 dataset inventory next  
+**Status:** In progress — Steps 1 and 2 complete; Stage 3 inventory notebook implemented, real-data verification pending  
 **Branch:** `dev` only  
 **Scope:** Build and validate the first ERA5-Land EDA notebook using whatever hourly Parquet data is available. Do not assume a fixed analysis period.
 
@@ -42,7 +42,7 @@ Inputs are **read-only** under `data/all/hourly/` (or a configured external data
 
 ## 3. Dataset inventory and provenance
 
-- [ ] Create `notebooks/01_hourly_data_quality_assessment.ipynb` using the EDA Starter narrative structure and the preferred EDA methodology.
+- [x] Create `notebooks/01_hourly_data_quality_assessment.ipynb` using the EDA Starter narrative structure and the preferred EDA methodology.
 - [ ] Discover actual hourly files and inventory filenames, sizes, available years, and metadata row counts.
 - [ ] Inspect `manifest.json` and compare listed files, expected coverage, completion state, and source/output hashes with available evidence.
 - [ ] Inspect actual Parquet schema, column names, data types, and variable presence before writing scientific queries.
@@ -117,6 +117,8 @@ Add one short row for each completed logical change. Do not mark incomplete work
 | 2026-11-14 | 2 — Test-level separation | `b0431fe`, `c79552d`, `fdc9014`, `d53a789`, `054132b`, `4c5ea25`, `229d817`, `8afa09b`, `9c71e2f`, `1bfb6a1` | Split actual production-loader tests into unit (isolated paths/errors) and integration (real DuckDB/Parquet). Tests call production code, not copied test algorithms. Updated instruction/setup document roles. Added package markers to prevent duplicate module-name collisions (`5f422be`, `b0a2790`, `35ffbdf`). **Execution on this revision remains pending.** |
 
 | 2026-11-14 | 2 — Verified loader test suite | User-run on `dev` | `tests/unit`: **6 passed in 0.07s**; `tests/integration`: **3 passed in 0.10s**; full `tests`: **9 passed in 0.12s**. Step 2 verified and closed. |
+
+| 2026-11-16 | 3 — Initial hourly inventory | `8768245`, `755edb4`, `743394f`, `4181b77`, `528a414`, `c2f7a37`, `8001e1c` | Created production metadata/manifest reader, unexecuted Stage 1 notebook inventory section, and unit/integration tests. Verified files and notebook JSON structure on `dev`; **new pytest suites and real 2024 dataset checks have not been executed**. Manifest SHA-256 comparison is intentionally pending until its actual schema is inspected. |
 
 ## Completion policy
 
