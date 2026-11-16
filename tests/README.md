@@ -10,15 +10,19 @@ tests/
 ├── README.md
 ├── unit/
 │   ├── __init__.py
-│   └── test_data_loader.py
+│   ├── test_data_loader.py
+│   └── test_dataset_inventory.py
 └── integration/
     ├── __init__.py
-    └── test_data_loader.py
+    ├── test_data_loader.py
+    └── test_dataset_inventory.py
 ```
 
 **Unit tests** call the actual functions in [`utils/data_loader.py`](../utils/data_loader.py) to check missing/empty input handling and input-path selection. The DuckDB read boundary is mocked only for filename-selection checks; other loader behavior is exercised directly.
 
 **Integration tests** call the same production loader using **real DuckDB and small Parquet files** created under temporary test directories. They verify annual-file discovery, hourly/daily separation, returned relation values, and input/manifest preservation. They do not use the project dataset or download remote data.
+
+**Dataset inventory tests** exercise [`utils/dataset_inventory.py`](../utils/dataset_inventory.py): unit checks validate missing directories and malformed manifests, while integration checks use real Parquet files to verify metadata, observed timestamps, and read-only behavior.
 
 ## Run tests
 
