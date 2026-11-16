@@ -119,10 +119,10 @@ This project uses data produced by the **Copernicus Climate Data Store (CDS)** a
 
 ## Acknowledgements and project origins
 
-This repository builds on an existing **EDA Starter Jupyter Notebook Template**, with original template authorship associated with [@chuawt](https://chuawt.github.io). We preserve the original acknowledgement below:
+1. This repository builds on an existing **EDA Starter Jupyter Notebook Template**, with original template authorship associated with [@chuawt](https://chuawt.github.io). We preserve the original acknowledgement below:
 
-Many thanks to the entire Dataquest community especially @Elena_Kosourova for your support and @gorelovaelizaveta01 for [your template](https://community.dataquest.io/t/template-for-jupyter-notebooks/567750) inspiration.
+    Many thanks to the entire Dataquest community especially @Elena_Kosourova for your support and @gorelovaelizaveta01 for [your template](https://community.dataquest.io/t/template-for-jupyter-notebooks/567750) inspiration.
 
-Additional thanks to **[CoenMeintjes](https://github.com/CoenMeintjes)** for [Data Science Jupyter Notebook Templates](https://github.com/CoenMeintjes/data_science_notebook_templates), used as reference material in the `ds-notebook/` directory and as a methodological starting point for the EDA notebooks.
+2. Additional thanks to **[CoenMeintjes](https://github.com/CoenMeintjes)** for [Data Science Jupyter Notebook Templates](https://github.com/CoenMeintjes/data_science_notebook_templates), used as reference material in the `ds-notebook/` directory and as a methodological starting point for this EDA notebooks.
 
 These acknowledgements recognize the contributions of the upstream template creators; the climate-analysis scope and code are being developed separately. Existing copyright and license obligations, where applicable, must still be respected.
